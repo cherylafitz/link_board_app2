@@ -1,0 +1,22 @@
+<%= render "shared/flash" %>
+
+
+<h2>Home Page  <%= link_to "", new_post_path, class: 'btn btn-primary btn-md glyphicon glyphicon-plus pull-right' %>
+</h2>
+<% @posts.each do |post| %>
+<% p = post.user_id %>
+<% u = User.find p %>
+
+<div class="well">
+  <p><%= link_to post.title, post %></p>
+  <em> (<%= post.link %>)</em>
+  <p>posted by: <%= u.name %>
+
+  <% if p = @current_user %>
+    <%= link_to "", edit_post_path(post), class: 'btn btn-info btn-xs glyphicon glyphicon-pencil pull-right' %>
+    <%= link_to "", post, method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-danger btn-xs glyphicon glyphicon-trash pull-right' %>
+
+  <% end %>
+  </p>
+</div>
+<% end %>
