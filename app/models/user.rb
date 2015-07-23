@@ -2,11 +2,18 @@ class User < ActiveRecord::Base
 
   has_secure_password
 
+  # posts i created
   has_many :posts
+  # votes i created
+  has_many :ratings, class_name: 'Vote'
+  # votes about me
+  has_many :votes, as: :votable
+  has_many :comments
 
   validates :email,
   presence: true,
-  uniqueness: {case_sensitive:false}
+  uniqueness: {case_sensitive:false},
+  format: {with: /@/}
 
   # validates :my_email_attribute, :email => true
 

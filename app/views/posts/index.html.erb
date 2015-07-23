@@ -1,22 +1,40 @@
 <%= render "shared/flash" %>
 
 
-<h2>Home Page  <%= link_to "", new_post_path, class: 'btn btn-primary btn-md glyphicon glyphicon-plus pull-right' %>
+<h2>Home Page  <%= link_to "", new_post_path, class: 'btn btn-primary btn-md glyphicon glyphicon-plus pull-right', :data => {toggle: 'modal', target: '#myModal'} %>
 </h2>
 <% @posts.each do |post| %>
 <% p = post.user_id %>
 <% u = User.find p %>
 
 <div class="well">
+  <%= bootstrap_form_for [post,Vote.new] do |f| %>
+  <%= f.button "", value: 'up', class: 'btn btn-primary btn-xs glyphicon glyphicon-chevron-up' %>
+  <%= f.button "", value: 'down', class: 'btn btn-primary btn-xs glyphicon glyphicon-chevron-down' %>
+  <% end %>
+  <%= post.votes.reduce(0){ |sum,v| sum + v.value} %>
+
   <p><%= link_to post.title, post %></p>
   <em> (<%= post.link %>)</em>
   <p>posted by: <%= u.name %>
-
-  <% if p = @current_user %>
-    <%= link_to "", edit_post_path(post), class: 'btn btn-info btn-xs glyphicon glyphicon-pencil pull-right' %>
+  <% if !@current_user.nil? && p == @current_user.id %>
+    <%= link_to "", edit_post_path(post), class: 'btn btn-info btn-xs glyphicon glyphicon-pencil pull-right', :data => {toggle: 'modal', target: '#myModal'} %>
     <%= link_to "", post, method: :delete, data: {confirm: "Are you sure?"}, class: 'btn btn-danger btn-xs glyphicon glyphicon-trash pull-right' %>
-
+  <% else %>
   <% end %>
   </p>
+  <p><%= link_to "comment", new_comment_path, class: 'btn btn-info btn-md', :data => {toggle: 'modal', target: '#myModal'} %></p>
 </div>
 <% end %>
+
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+    </div>
+  </div>
+</div>
+

@@ -8,19 +8,28 @@ class PostsController < ApplicationController
 
   def new
     @post = Post.new
+    render layout: false
   end
 
   def create
     @current_user
     @post = current_user.posts.create post_params
-    # @post.save
-    # Post.create
+    if @post.persisted?
+      # see lenny's code
+      redirect_to root_path
+    else
+      flash[:danger]= @post.errors.full_messages.uniq.to_sentence
+      # render :new
+      # redirect_to root_path
+      redirect_to :back
+    end
 
-    redirect_to root_path
   end
 
   def edit
-    @post = Post.create post_params
+    @post = Post.find params[:id]
+    render layout: false
+     # = p.create post_params
   end
 
   def update
@@ -37,7 +46,7 @@ class PostsController < ApplicationController
     p = Post.find params[:id]
     # u = p.users
     @current_user = current_user
-    if p.user_id = current_user
+    if p.user_id == current_user.id
       p.delete
     else
       flash[:danger] = 'Access denied.'
